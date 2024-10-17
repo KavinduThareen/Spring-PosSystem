@@ -1,23 +1,19 @@
-$(document).ready(function () {
-  $.ajax({
-    url: "http://localhost:8080/Spring_POS_API/api/v1/items",
-    method: "GET",
-    dataType: "json",
+document.addEventListener("DOMContentLoaded", function () {
+  fetch("http://localhost:8080/Spring_POS_API/api/v1/items")
+      .then((response) => response.json())
+      .then((data) => {
+        const labels = data.map((item) => item.category);
+        const quantities = data.map((item) => item.qtyOnHand);
 
-    success: function (response) {
-      const labels = response.map((item) => item.category);
-      const data = response.map((item) => item.qtyOnHand);
-
-      renderChart(labels, data);
-    },
-    error: function (error) {
-      console.log(error);
-    },
-  });
+        renderChart(labels, quantities);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
 
   function renderChart(labels, data) {
-    var ctx = document.getElementById("myBarChart").getContext("2d");
-    var myBarChart = new Chart(ctx, {
+    const ctx = document.getElementById("myBarChart").getContext("2d");
+    const myBarChart = new Chart(ctx, {
       type: "bar",
       data: {
         labels: labels,

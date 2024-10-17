@@ -1,20 +1,12 @@
-import {
-  getAllItems,
-  saveItem,
-  searchItem,
-  updateItem,
-  deleteItem,
-} from "../model/itemModel.js";
-
-$(document).ready(function () {
+document.addEventListener("DOMContentLoaded", function () {
   reloadItems();
 });
 
-$("#add-item-btn").click(function () {
-  const category = $("#item-category").val();
-  const unitPrice = $("#price").val();
-  const qtyOnHand = $("#qty").val();
-  const expireDate = $("#ex-date").val();
+document.getElementById("add-item-btn").addEventListener("click", function () {
+  const category = document.getElementById("item-category").value;
+  const unitPrice = document.getElementById("price").value;
+  const qtyOnHand = document.getElementById("qty").value;
+  const expireDate = document.getElementById("ex-date").value;
 
   const itemData = {
     category: category,
@@ -23,22 +15,21 @@ $("#add-item-btn").click(function () {
     expireDate: expireDate,
   };
 
-  const promise = saveItem(itemData);
-  promise.then(() => {
+  saveItem(itemData).then(() => {
     reloadItems();
   });
 });
 
-$("#search-item-btn").click(async function () {
-  const itemCode = $("#item-code").val();
+document.getElementById("search-item-btn").addEventListener("click", async function () {
+  const itemCode = document.getElementById("item-code").value;
 
-  if (itemCode != "") {
+  if (itemCode !== "") {
     try {
       const itemData = await searchItem(itemCode);
-      $("#item-category").val(itemData.category);
-      $("#price").val(itemData.unitPrice);
-      $("#qty").val(itemData.qtyOnHand);
-      $("#ex-date").val(itemData.expireDate);
+      document.getElementById("item-category").value = itemData.category;
+      document.getElementById("price").value = itemData.unitPrice;
+      document.getElementById("qty").value = itemData.qtyOnHand;
+      document.getElementById("ex-date").value = itemData.expireDate;
     } catch (error) {
       console.error("Error fetching item data:", error);
     }
@@ -47,14 +38,14 @@ $("#search-item-btn").click(async function () {
   }
 });
 
-$("#update-item-btn").click(function () {
-  const itemCode = $("#item-code").val();
+document.getElementById("update-item-btn").addEventListener("click", function () {
+  const itemCode = document.getElementById("item-code").value;
 
-  if (itemCode != "") {
-    const category = $("#item-category").val();
-    const unitPrice = $("#price").val();
-    const qtyOnHand = $("#qty").val();
-    const expireDate = $("#ex-date").val();
+  if (itemCode !== "") {
+    const category = document.getElementById("item-category").value;
+    const unitPrice = document.getElementById("price").value;
+    const qtyOnHand = document.getElementById("qty").value;
+    const expireDate = document.getElementById("ex-date").value;
 
     const itemData = {
       category: category,
@@ -71,8 +62,7 @@ $("#update-item-btn").click(function () {
       dangerMode: true,
     }).then((willUpdate) => {
       if (willUpdate) {
-        const promise = updateItem(itemCode, itemData);
-        promise.then(() => {
+        updateItem(itemCode, itemData).then(() => {
           reloadItems();
         });
       }
@@ -82,8 +72,8 @@ $("#update-item-btn").click(function () {
   }
 });
 
-$("#delete-item-btn").click(function () {
-  const itemCode = $("#item-code").val();
+document.getElementById("delete-item-btn").addEventListener("click", function () {
+  const itemCode = document.getElementById("item-code").value;
 
   if (itemCode !== "") {
     swal({
@@ -94,8 +84,7 @@ $("#delete-item-btn").click(function () {
       dangerMode: true,
     }).then((willDelete) => {
       if (willDelete) {
-        const promise = deleteItem(itemCode);
-        promise.then(() => {
+        deleteItem(itemCode).then(() => {
           reloadItems();
         });
       }
@@ -106,48 +95,42 @@ $("#delete-item-btn").click(function () {
 });
 
 function loadItemTable(itemList) {
-  $("#item-table").empty();
+  const table = document.getElementById("item-table");
+  table.innerHTML = ""; // Clear previous table data
   itemList.forEach(function (item) {
-    $(".table").append(
-      "<tr> " +
-        "<td>" +
-        item.itemCode +
-        "</td>" +
-        "<td>" +
-        item.category +
-        "</td>" +
-        "<td>" +
-        item.unitPrice +
-        "</td>" +
-        "<td>" +
-        item.qtyOnHand +
-        "</td>" +
-        "<td>" +
-        item.registerDate +
-        "</td>" +
-        "<td>" +
-        item.expireDate +
-        "</td>" +
-        "</tr>"
-    );
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+      <td>${item.itemCode}</td>
+      <td>${item.category}</td>
+      <td>${item.unitPrice}</td>
+      <td>${item.qtyOnHand}</td>
+      <td>${item.registerDate}</td>
+      <td>${item.expireDate}</td>
+    `;
+
+    table.appendChild(row);
   });
 }
 
 function loadItemCode(itemCodes) {
-  const itemCode = $("#item-code");
-  itemCode.empty();
-  itemCode.append('<option value="">Search,Update or Delete Item</option>');
+  const itemCodeDropdown = document.getElementById("item-code");
+  itemCodeDropdown.innerHTML = '<option value="">Search,Update or Delete Item</option>';
 
   itemCodes.forEach(function (code) {
-    itemCode.append(`<option value="${code}">${code}</option>`);
+    const option = document.createElement("option");
+    option.value = code;
+    option.textContent = code;
+    itemCodeDropdown.appendChild(option);
   });
 }
 
 async function reloadItems() {
   try {
-    $("#price").val("");
-    $("#qty").val("");
-    $("#ex-date").val("");
+    document.getElementById("price").value = "";
+    document.getElementById("qty").value = "";
+    document.getElementById("ex-date").value = "";
+
     const itemList = await getAllItems();
     loadItemTable(itemList);
     loadItemCode(itemList.map((item) => item.itemCode));

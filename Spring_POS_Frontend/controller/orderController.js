@@ -37,7 +37,7 @@ async function loadCustomerMobiles() {
 
     customerList.forEach(function (customer) {
       cusMobile.append(
-        `<option value="${customer.mobile}">${customer.mobile}</option>`
+          `<option value="${customer.mobile}">${customer.mobile}</option>`
       );
     });
 
@@ -49,7 +49,7 @@ async function loadCustomerMobiles() {
 
 function autoFillCustomerDetails(mobile) {
   const selectedCustomer = window.customers.find(
-    (customer) => customer.mobile == mobile
+      (customer) => customer.mobile == mobile
   );
 
   if (selectedCustomer) {
@@ -67,7 +67,7 @@ async function loadItemCategories() {
 
     itemList.forEach(function (item) {
       itemCategory.append(
-        `<option value="${item.category}" data-item-code="${item.itemCode}">${item.category}</option>`
+          `<option value="${item.category}" data-item-code="${item.itemCode}">${item.category}</option>`
       );
     });
 
@@ -83,8 +83,8 @@ function autoFillItemDetails(category) {
   if (selectedItem) {
     $("#item-price").val(selectedItem.unitPrice);
     $("#item-qty").attr(
-      "Placeholder",
-      "Available quantity is: " + selectedItem.qtyOnHand
+        "Placeholder",
+        "Available quantity is: " + selectedItem.qtyOnHand
     );
   }
 }
@@ -94,9 +94,7 @@ const addedItems = [];
 $("#add-item-btn").click(function () {
   const customer = $("#cus-mobile").val();
   const category = $("#item-category").val();
-  const selectedItemCode = $("#item-category option:selected").data(
-    "item-code"
-  );
+  const selectedItemCode = $("#item-category option:selected").data("item-code");
   const unitPrice = parseFloat($("#item-price").val());
   const qty = parseInt($("#item-qty").val());
 
@@ -154,15 +152,13 @@ $("#submit-order-btn").click(async function () {
   let itemsHtml = "";
   let totalAmount = 0;
   addedItems.forEach((item) => {
-    itemsHtml += `<p>${item.category} - ${item.unitPrice.toFixed(2)} x ${
-      item.qty
-    } = ${item.totalPrice.toFixed(2)}</p>`;
+    itemsHtml += `<p>${item.category} - ${item.unitPrice.toFixed(2)} x ${item.qty} = ${item.totalPrice.toFixed(2)}</p>`;
     totalAmount += item.totalPrice;
   });
 
   const unitPriceAndQuantity = addedItems
-    .map((item) => `${item.unitPrice.toFixed(2)} x ${item.qty}`)
-    .join(", ");
+      .map((item) => `${item.unitPrice.toFixed(2)} x ${item.qty}`)
+      .join(", ");
 
   $("#modal-customer-id").text(customerId);
   $("#modal-customer-name").text(customerName);

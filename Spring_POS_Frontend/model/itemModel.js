@@ -1,73 +1,87 @@
 export async function getAllItems() {
-  return $.ajax({
-    url: "http://localhost:8080/Spring_POS_API/api/v1/items",
-    method: "GET",
-    dataType: "json",
+  try {
+    const response = await fetch("http://localhost:8080/Spring_POS_API/api/v1/items", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-    error: function (error) {
-      console.log(error);
-    },
-  });
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching items:", error);
+  }
 }
 
-export function saveItem(item) {
-  return $.ajax({
-    url: "http://localhost:8080/Spring_POS_API/api/v1/items",
-    method: "POST",
-    contentType: "application/json",
-    data: JSON.stringify(item),
+export async function saveItem(item) {
+  try {
+    const response = await fetch("http://localhost:8080/Spring_POS_API/api/v1/items", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(item),
+    });
 
-    success: function () {
+    if (response.ok) {
       swal("Confirmation!", "Item Saved Successfully!", "success");
-    },
-
-    error: function (error) {
-      console.log(error);
-    },
-  });
+    }
+  } catch (error) {
+    console.error("Error saving item:", error);
+  }
 }
 
 export async function searchItem(itemCode) {
-  return $.ajax({
-    url: "http://localhost:8080/Spring_POS_API/api/v1/items/" + itemCode,
-    data: "GET",
-    dataType: "json",
+  try {
+    const response = await fetch(`http://localhost:8080/Spring_POS_API/api/v1/items/${itemCode}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-    error: function (error) {
+    if (!response.ok) {
       swal("Warning!", "Item not found!", "info");
-    },
-  });
+      return null;
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error searching item:", error);
+  }
 }
 
-export function updateItem(itemCode, item) {
-  return $.ajax({
-    url: "http://localhost:8080/Spring_POS_API/api/v1/items/" + itemCode,
-    method: "PATCH",
-    contentType: "application/json",
-    data: JSON.stringify(item),
+export async function updateItem(itemCode, item) {
+  try {
+    const response = await fetch(`http://localhost:8080/Spring_POS_API/api/v1/items/${itemCode}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(item),
+    });
 
-    success: function () {
-      swal("Confirmation!", "Item Update Successfully!", "success");
-    },
-
-    error: function (error) {
-      console.log(error);
-    },
-  });
+    if (response.ok) {
+      swal("Confirmation!", "Item Updated Successfully!", "success");
+    }
+  } catch (error) {
+    console.error("Error updating item:", error);
+  }
 }
 
-export function deleteItem(itemCode) {
-  return $.ajax({
-    url: "http://localhost:8080/Spring_POS_API/api/v1/items/" + itemCode,
-    method: "DELETE",
-    contentType: "application/json",
+export async function deleteItem(itemCode) {
+  try {
+    const response = await fetch(`http://localhost:8080/Spring_POS_API/api/v1/items/${itemCode}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-    success: function () {
-      swal("Confirmation!", "Item Delete Successfully!", "success");
-    },
-
-    error: function (error) {
-      console.log(error);
-    },
-  });
+    if (response.ok) {
+      swal("Confirmation!", "Item Deleted Successfully!", "success");
+    }
+  } catch (error) {
+    console.error("Error deleting item:", error);
+  }
 }

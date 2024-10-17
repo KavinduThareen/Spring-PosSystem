@@ -2,11 +2,11 @@ package lk.ijse.spring_pos_backend.controller;
 
 import jakarta.validation.Valid;
 
-import lk.ijse.spring_pos_backend.CustomerObj.CustomerResponse;
-import lk.ijse.spring_pos_backend.dto.CustomerDTO;
-import lk.ijse.spring_pos_backend.exception.CustomerNotFoundException;
+import lk.ijse.spring_pos_backend.CustomerObj.ItemResponse;
+import lk.ijse.spring_pos_backend.dto.ItemDTO;
 import lk.ijse.spring_pos_backend.exception.DataPersistFailedException;
-import lk.ijse.spring_pos_backend.service.CustomerService;
+import lk.ijse.spring_pos_backend.exception.ItemNotFoundException;
+import lk.ijse.spring_pos_backend.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,23 +19,23 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/customers")
+@RequestMapping("/api/v1/items")
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequiredArgsConstructor
-public class CustomerController {
+public class ItemController {
     @Autowired
-    private final CustomerService customerService;
+    private final ItemService itemService;
 
-    static Logger logger = LoggerFactory.getLogger(CustomerController.class);
+    static Logger logger = LoggerFactory.getLogger(ItemController.class);
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> saveCustomer(@Valid @RequestBody CustomerDTO customer) {
-        if (customer == null) {
+    public ResponseEntity<Void> saveItem(@Valid @RequestBody ItemDTO itemDTO) {
+        if (itemDTO == null) {
             return ResponseEntity.badRequest().build();
         } else {
             try {
-                customerService.saveCustomer(customer);
-                logger.info("Customer saved : " + customer);
+                itemService.saveItem(itemDTO);
+                logger.info("Item saved : " + itemDTO);
                 return ResponseEntity.created(null).build();
             } catch (DataPersistFailedException e) {
                 return ResponseEntity.badRequest().build();
@@ -46,28 +46,28 @@ public class CustomerController {
         }
     }
 
-    @GetMapping(value = "/{customerId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public CustomerResponse getCustomerById(@PathVariable("customerId") String customerId) {
-        return customerService.getCustomerById(customerId);
+    @GetMapping(value = "/{itemCode}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ItemResponse getItemById(@PathVariable("itemCode") String itemCode) {
+        return itemService.getItemById(itemCode);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<CustomerDTO> getAllCustomers() {
-        return customerService.getAllCustomers();
+    public List<ItemDTO> getAllItems() {
+        return itemService.getAllItems();
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PatchMapping(value = "/{customerId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> updateCustomer(@Valid @RequestBody CustomerDTO customerDTO, @PathVariable("customerId") String customerId) {
-        if (customerDTO == null || customerId == null) {
+    @PatchMapping(value = "/{itemCode}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> updateItem(@Valid @RequestBody ItemDTO itemDTO, @PathVariable("itemCode") String itemCode) {
+        if (itemDTO == null || itemCode == null) {
             return ResponseEntity.badRequest().build();
         } else {
             try {
-                customerService.updateCustomer(customerId, customerDTO);
-                logger.info("Customer updated : " + customerDTO);
+                itemService.updateItem(itemCode, itemDTO);
+                logger.info("Item updated : " + itemDTO);
                 return ResponseEntity.noContent().build();
-            } catch (CustomerNotFoundException e) {
-                return ResponseEntity.notFound().build();
+            } catch (DataPersistFailedException e) {
+                return ResponseEntity.badRequest().build();
             } catch (Exception e) {
                 logger.error(e.getMessage());
                 return ResponseEntity.internalServerError().build();
@@ -75,13 +75,13 @@ public class CustomerController {
         }
     }
 
-    @DeleteMapping("/{customerId}")
-    public ResponseEntity<Void> deleteCustomer(@PathVariable("customerId") String customerId) {
+    @DeleteMapping("/{itemCode}")
+    public ResponseEntity<Void> deleteItem(@PathVariable("itemCode") String itemCode) {
         try {
-            customerService.deleteCustomer(customerId);
-            logger.info("Customer deleted : " + customerId);
+            itemService.deleteItem(itemCode);
+            logger.info("Item deleted : " + itemCode);
             return ResponseEntity.noContent().build();
-        } catch (CustomerNotFoundException e) {
+        } catch (ItemNotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
             logger.error(e.getMessage());

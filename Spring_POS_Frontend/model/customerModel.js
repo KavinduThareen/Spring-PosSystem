@@ -1,75 +1,88 @@
 export async function getAllCustomers() {
-  return $.ajax({
-    url: "http://localhost:8080/Spring_POS_API/api/v1/customers",
-    method: "GET",
-    dataType: "json",
-
-    error: function (error) {
-      console.log(error);
-    },
-  });
+  try {
+    const response = await fetch("http://localhost:8080/Spring_POS_API/api/v1/customers", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching customers:", error);
+  }
 }
 
-export function saveCustomer(customer) {
-  return $.ajax({
-    url: "http://localhost:8080/Spring_POS_API/api/v1/customers",
-    method: "POST",
-    contentType: "application/json",
-    data: JSON.stringify(customer),
+export async function saveCustomer(customer) {
+  try {
+    const response = await fetch("http://localhost:8080/Spring_POS_API/api/v1/customers", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(customer),
+    });
 
-    success: function () {
+    if (response.ok) {
       swal("Confirmation!", "Customer Saved Successfully!", "success");
-    },
-
-    error: function (error) {
-      console.log(error);
-    },
-  });
+    }
+  } catch (error) {
+    console.error("Error saving customer:", error);
+  }
 }
 
 export async function searchCustomer(customerId) {
-  return $.ajax({
-    url: "http://localhost:8080/Spring_POS_API/api/v1/customers/" + customerId,
-    method: "GET",
-    dataType: "json",
+  try {
+    const response = await fetch(`http://localhost:8080/Spring_POS_API/api/v1/customers/${customerId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-    error: function (error) {
+    if (!response.ok) {
       swal("Warning!", "Customer not found!", "info");
-    },
-  });
+      return null;
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Error searching customer:", error);
+  }
 }
 
-export function updateCustomer(customerId, customer) {
-  return $.ajax({
-    url: "http://localhost:8080/Spring_POS_API/api/v1/customers/" + customerId,
-    method: "PATCH",
-    contentType: "application/json",
-    data: JSON.stringify(customer),
+export async function updateCustomer(customerId, customer) {
+  try {
+    const response = await fetch(`http://localhost:8080/Spring_POS_API/api/v1/customers/${customerId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(customer),
+    });
 
-    success: function () {
-      swal("Confirmation!", "Customer Update Successfully!", "success");
-    },
-
-    error: function (error) {
-      console.log(error);
-    },
-  });
+    if (response.ok) {
+      swal("Confirmation!", "Customer Updated Successfully!", "success");
+    }
+  } catch (error) {
+    console.error("Error updating customer:", error);
+  }
 }
 
-export function deleteCustomer(customerId) {
-  return $.ajax({
-    url: "http://localhost:8080/Spring_POS_API/api/v1/customers/" + customerId,
-    method: "DELETE",
-    contentType: "application/json",
+export async function deleteCustomer(customerId) {
+  try {
+    const response = await fetch(`http://localhost:8080/Spring_POS_API/api/v1/customers/${customerId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
 
-    success: function () {
-      swal("Confirmation!", "Customer Delete Successfully!", "success");
-    },
-
-    error: function (error) {
-      console.log(error);
-    },
-  });
+    if (response.ok) {
+      swal("Confirmation!", "Customer Deleted Successfully!", "success");
+    }
+  } catch (error) {
+    console.error("Error deleting customer:", error);
+  }
 }
 
 export function validateCustomer(customer) {
@@ -83,7 +96,6 @@ export function validateCustomer(customer) {
   const isAddressValid = addressPattern.test(customer.address);
   const isCusMobileValid = cusMobilePattern.test(customer.mobile);
   const isEmailValid = emailPattern.test(customer.email);
-
 
   if (!isCusFirstNameValid) {
     swal({
@@ -134,5 +146,6 @@ export function validateCustomer(customer) {
     });
     return false;
   }
+
   return true;
 }

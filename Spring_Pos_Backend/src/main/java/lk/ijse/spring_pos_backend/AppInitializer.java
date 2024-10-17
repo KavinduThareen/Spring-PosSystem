@@ -1,7 +1,8 @@
 package lk.ijse.spring_pos_backend;
 
-import lk.ijse.spring_pos_api.config.WebAppConfig;
-import lk.ijse.spring_pos_api.config.WebAppRootConfig;
+
+import lk.ijse.spring_pos_backend.config.WebAppConfig;
+import lk.ijse.spring_pos_backend.config.WebAppRootConfig;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class AppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
