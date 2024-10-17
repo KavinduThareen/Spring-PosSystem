@@ -2,6 +2,8 @@ package lk.ijse.spring_pos_backend.util;
 
 import lk.ijse.spring_pos_backend.dto.CustomerDTO;
 import lk.ijse.spring_pos_backend.dto.ItemDTO;
+import lk.ijse.spring_pos_backend.dto.OrderDTO;
+import lk.ijse.spring_pos_backend.dto.OrderDetailDTO;
 import lk.ijse.spring_pos_backend.entity.CustomerEntity;
 import lk.ijse.spring_pos_backend.entity.ItemEntity;
 import lk.ijse.spring_pos_backend.entity.OrderDetailEntity;
